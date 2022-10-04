@@ -263,7 +263,7 @@ services:
         condition: service_healthy
     image: docker.elastic.co/logstash/logstash:8.4.1
     env_file:
-      - ./env/.logstash.local.env
+      - ./env/.logstash.env
     user: root
     volumes:
       - "certs:/usr/share/logstash/config/certs"
@@ -289,31 +289,31 @@ services:
     volumes:
       - "certs:/etc/client"
       - "$PWD/filebeat-syslog.yml:/usr/share/filebeat/filebeat.yml:ro"
-      - "/Users/kang-yunsik/logback/syslog:/var/log:ro"
+      - "/logfs/tomcat:/var/log:ro"
     networks:
       - elastic
     environment:
       - strict.perms=false
     env_file:
-      - ./env/.filebeat.local.env
+      - ./env/.filebeat.env
 
-  # filebeat-accesslog:
-  #   container_name: filebeat-accesslog
-  #   depends_on:
-  #     logstash:
-  #       condition: service_healthy
-  #   image: docker.elastic.co/beats/filebeat:8.4.1-${ARCHITECTURE:amd64}
-  #   user: root
-  #   volumes:
-  #     - "certs:/etc/client"
-  #     - "$PWD/filebeat-accesslog.yml:/usr/share/filebeat/filebeat.yml:ro"
-  #     - "/Users/kang-yunsik/logback/accesslog:/var/log:ro"
-  #   networks:
-  #     - elastic
-  #   environment:
-  #     - strict.perms=false
-  #   env_file:
-  #   - ./env/.filebeat.env
+  filebeat-accesslog:
+    container_name: filebeat-accesslog
+    depends_on:
+      logstash:
+        condition: service_healthy
+    image: "docker.elastic.co/beats/filebeat:8.4.1-${ARCHITECTURE:-amd64}"
+    user: root
+    volumes:
+      - "certs:/etc/client"
+      - "$PWD/filebeat-access.yml:/usr/share/filebeat/filebeat.yml:ro"
+      - "/logfs/tomcat:/var/log:ro"
+    networks:
+      - elastic
+    environment:
+      - strict.perms=false
+    env_file:
+      - ./env/.filebeat.env
 
 volumes:
   certs:

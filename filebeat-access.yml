@@ -1,10 +1,12 @@
 filebeat:
   inputs:
     - paths:
-        - "/var/log/${ACCESSLOG_PATH_PATTERN}"
+        - "/var/log/tomcat85_con1/${ACCESSLOG_PATH_PATTERN}"
       type: log
       enabled: true
-      tid: spring-access-log
+      fields_under_root: true
+      fields:
+        tid: spring-access-log
 
 output:
   logstash:
