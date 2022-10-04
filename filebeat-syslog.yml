@@ -1,0 +1,19 @@
+filebeat:
+  inputs:
+    - paths:
+        - "/var/log/${SYSLOG_PATH_PATTERN}"
+      type: log
+      enabled: true
+      tid: spring-syslog
+
+output:
+  logstash:
+    hosts: ["logstash"]
+    ssl:
+      certificate_authorities: ["/etc/client/logstash/logstash.crt"]
+
+shipper:
+
+logging:
+  to_files: true
+  files:
