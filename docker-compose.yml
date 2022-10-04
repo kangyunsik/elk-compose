@@ -279,35 +279,18 @@ services:
       timeout: 10s
       retries: 120
 
-  filebeat-syslog:
-    container_name: filebeat-syslog
+  filebeat:
+    container_name: filebeat
     depends_on:
       logstash:
         condition: service_healthy
-    image: "docker.elastic.co/beats/filebeat:8.4.1-${ARCHITECTURE:-amd64}"
+    image: "docker.elastic.co/beats/filebeat:8.4.1-${ARCHITECTURE:-arm64}"
+    platform: linux/arm64
     user: root
     volumes:
       - "certs:/etc/client"
-      - "$PWD/filebeat-syslog.yml:/usr/share/filebeat/filebeat.yml:ro"
-      - "/logfs/tomcat:/var/log:ro"
-    networks:
-      - elastic
-    environment:
-      - strict.perms=false
-    env_file:
-      - ./env/.filebeat.env
-
-  filebeat-accesslog:
-    container_name: filebeat-accesslog
-    depends_on:
-      logstash:
-        condition: service_healthy
-    image: "docker.elastic.co/beats/filebeat:8.4.1-${ARCHITECTURE:-amd64}"
-    user: root
-    volumes:
-      - "certs:/etc/client"
-      - "$PWD/filebeat-access.yml:/usr/share/filebeat/filebeat.yml:ro"
-      - "/logfs/tomcat:/var/log:ro"
+      - "$PWD/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
+      - "~/logfs/tomcat:/var/log:ro"
     networks:
       - elastic
     environment:
