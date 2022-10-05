@@ -2,19 +2,31 @@ filebeat:
   inputs:
     - type: log
       paths:
-        - "/var/log/tomcat85_con1/${SYSLOG_PATH_PATTERN}"
-      enabled: true
-      fields_under_root: true
-      fields:
-        tid: spring-syslog
-  inputs:
-    - type: log
-      paths:
-        - "/var/log/tomcat85_con1/${ACCESSLOG_PATH_PATTERN}"
+        - "/var/log/tomcat85_con?/${ACCESSLOG_PATH_PATTERN}"
+      id: spring-accesslog-id
       enabled: true
       fields_under_root: true
       fields:
         tid: spring-accesslog
+      multiline:
+        pattern: '^[[:space:]]'
+        negate: false
+        match: after
+
+    - type: log
+      paths:
+        - "/var/log/tomcat85_con?/${SYSLOG_PATH_PATTERN}"
+      id: spring-syslog-id
+      enabled: true
+      fields_under_root: true
+      fields:
+        tid: spring-syslog
+      multiline:
+        pattern: '^[[:space:]]'
+        negate: false
+        match: after
+
+
 
 output:
   logstash:
