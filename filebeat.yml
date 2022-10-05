@@ -7,7 +7,7 @@ filebeat:
       fields_under_root: true
       fields:
         tid: spring-syslog
-
+  inputs:
     - type: log
       paths:
         - "/var/log/tomcat85_con1/${ACCESSLOG_PATH_PATTERN}"

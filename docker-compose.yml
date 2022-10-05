@@ -284,13 +284,13 @@ services:
     depends_on:
       logstash:
         condition: service_healthy
-    image: "docker.elastic.co/beats/filebeat:8.4.1-${ARCHITECTURE:-arm64}"
-    platform: linux/arm64
+    image: "docker.elastic.co/beats/filebeat:8.4.1"
+    # platform: linux/arm64
     user: root
     volumes:
       - "certs:/etc/client"
       - "$PWD/filebeat.yml:/usr/share/filebeat/filebeat.yml:ro"
-      - "~/logfs/tomcat:/var/log:ro"
+      - "/logfs/tomcat:/var/log:ro"
     networks:
       - elastic
     environment:
